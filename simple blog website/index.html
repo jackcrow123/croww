@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        #blog-list {
+            margin: 20px;
+        }
+
+        .post {
+            background-color: white;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .post {
+                padding: 15px;
+            }
+        }
+
+        /* Style for post detail page */
+        #post-detail {
+            margin: 20px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #post-detail h1 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Blog List Page -->
+    <div id="blog-list"></div>
+
+    <script>
+        // Simulated JSON data for blog posts
+        const blogData = [
+            {
+                "id": 1,
+                "title": "Introduction to Web Development",
+                "description": "A beginner's guide to web development.",
+                "content": "Web development is the process of building websites and applications. It involves both frontend and backend development..."
+            },
+            {
+                "id": 2,
+                "title": "JavaScript Basics",
+                "description": "Learn the basics of JavaScript, the most popular programming language for web development.",
+                "content": "JavaScript is a programming language that runs in the browser. It allows developers to create interactive websites and web applications..."
+            },
+            {
+                "id": 3,
+                "title": "Responsive Web Design",
+                "description": "A guide to making your websites look great on any device.",
+                "content": "Responsive web design is an approach that ensures websites look good on all screen sizes, from phones to desktops..."
+            }
+        ];
+
+        // Function to load blog list
+        function loadBlogList() {
+            const blogList = document.getElementById('blog-list');
+            blogList.innerHTML = ''; // Clear any existing content
+
+            blogData.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p>${post.description}</p>
+                    <a href="#" onclick="viewPost(${post.id})">Read More</a>
+                `;
+                blogList.appendChild(postElement);
+            });
+        }
+
+        // Function to view a single post
+        function viewPost(postId) {
+            const post = blogData.find(p => p.id === postId);
+            if (post) {
+                const postDetail = document.getElementById('blog-list');
+                postDetail.innerHTML = `
+                    <div id="post-detail">
+                        <h1>${post.title}</h1>
+                        <p>${post.content}</p>
+                        <a href="#" onclick="loadBlogList()">Back to Blog List</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Initial load of blog list
+        loadBlogList();
+    </script>
+
+</body>
+</html>

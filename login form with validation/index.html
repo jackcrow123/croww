@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="return validateLogin()">
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <input type="checkbox" id="show-password" onclick="togglePassword()"> Show Password
+            </div>
+            <button type="submit">Login</button>
+            <p id="error-message"></p>
+            <p id="success-message"></p> 
+        </form>
+    </div>
+
+    <script>
+        function validateLogin() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var errorMessage = document.getElementById("error-message");
+            var successMessage = document.getElementById("success-message");
+            var validEmail = "admin@example.com";
+            var validPassword = "password123";
+
+            // Clear previous messages
+            errorMessage.textContent = "";
+            successMessage.textContent = "";
+
+            if (email === "" || password === "") {
+                errorMessage.textContent = "Both fields are required.";
+                return false;
+            }
+
+            if (email === validEmail && password === validPassword) {
+                successMessage.textContent = "Login successful! Redirecting...";
+                successMessage.style.color = "green"; // Style success message in green
+                setTimeout(function() {
+                    window.location.href = "welcome.html";
+                }, 1500); // Redirect after 1.5 seconds
+                return false;
+            } else {
+                errorMessage.textContent = "Invalid email or password.";
+                errorMessage.style.color = "red"; // Style error message in red
+                return false;
+            }
+        }
+
+        function togglePassword() {
+            var passwordField = document.getElementById("password");
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+        }
+    </script>
+</body>
+</html>
