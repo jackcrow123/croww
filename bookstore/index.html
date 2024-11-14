@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPath Query Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .result-box {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .result-box p {
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .result-box strong {
+            color: #007BFF;
+        }
+
+        #price-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #price-list li {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>XPath Query Example</h2>
+    
+    <div class="result-box">
+        <p><strong>Title of the first book:</strong> <span id="first-book-title"></span></p>
+        <p><strong>Prices above 35:</strong></p>
+        <ul id="price-list"></ul>
+    </div>
+    
+    <script>
+        // XML content embedded as a string (without the XML declaration)
+        const xmlContent = `
+            <bookstore>
+                <book>
+                    <title>JavaScript Essentials</title>
+                    <author>John Doe</author>
+                    <price>29.99</price>
+                </book>
+                <book>
+                    <title>Python Programming</title>
+                    <author>Jane Smith</author>
+                    <price>39.95</price>
+                </book>
+                <book>
+                    <title>Advanced Algorithms</title>
+                    <author>Albert Wang</author>
+                    <price>45.00</price>
+                </book>
+                <book>
+                    <title>Data Science with R</title>
+                    <author>Mary Johnson</author>
+                    <price>55.50</price>
+                </book>
+            </bookstore>
+        `;
+        
+        // Parse the XML string into a DOM object
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlContent, "application/xml");
+
+        // Check for XML parsing errors
+        const parseError = xmlDoc.querySelector("parsererror");
+        if (parseError) {
+            console.error("XML Parsing Error:", parseError.textContent);
+        } else {
+            // (i) Select the title of the first book
+            const firstBookTitle = xmlDoc.evaluate("/bookstore/book[1]/title", xmlDoc, null, XPathResult.STRING_TYPE, null).stringValue;
+            console.log("First Book Title:", firstBookTitle); // Debugging
+
+            // (ii) Select the prices where price > 35 using number() for proper comparison
+            const pricesAbove35 = [];
+            const priceIterator = xmlDoc.evaluate("/bookstore/book[price > number('35')]/price", xmlDoc, null, XPathResult.ANY_TYPE, null);
+            let priceNode = priceIterator.iterateNext();
+            while (priceNode) {
+                pricesAbove35.push(priceNode.textContent);
+                priceNode = priceIterator.iterateNext();
+            }
+
+            console.log("Prices above 35:", pricesAbove35); // Debugging
+
+            // Display the results on the webpage
+            document.getElementById('first-book-title').innerText = firstBookTitle || "No title found";
+
+            // Display the prices above 35
+            const priceList = document.getElementById('price-list');
+            if (pricesAbove35.length > 0) {
+                pricesAbove35.forEach(price => {
+                    const li = document.createElement('li');
+                    li.textContent = price;
+                    priceList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = "No prices above 35 found.";
+                priceList.appendChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
