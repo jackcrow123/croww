@@ -1,0 +1,238 @@
+<?php
+// Start the PHP server for SOAP web service
+
+// Check if the WSDL has been requested
+if ($_SERVER['REQUEST_URI'] == '/calculator.wsdl') {
+    header('Content-Type: application/xml');
+    echo '<?xml version="1.0" encoding="UTF-8"?>
+    <definitions xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                 xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                 xmlns="http://www.example.com/calculator"
+                 name="CalculatorService"
+                 targetNamespace="http://www.example.com/calculator"
+                 xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+        <wsdl:message name="AddRequest">
+            <wsdl:part name="a" type="xsd:int"/>
+            <wsdl:part name="b" type="xsd:int"/>
+        </wsdl:message>
+    
+        <wsdl:message name="AddResponse">
+            <wsdl:part name="result" type="xsd:int"/>
+        </wsdl:message>
+    
+        <wsdl:message name="SubtractRequest">
+            <wsdl:part name="a" type="xsd:int"/>
+            <wsdl:part name="b" type="xsd:int"/>
+        </wsdl:message>
+    
+        <wsdl:message name="SubtractResponse">
+            <wsdl:part name="result" type="xsd:int"/>
+        </wsdl:message>
+    
+        <wsdl:portType name="CalculatorPortType">
+            <wsdl:operation name="add">
+                <wsdl:input message="tns:AddRequest"/>
+                <wsdl:output message="tns:AddResponse"/>
+            </wsdl:operation>
+            <wsdl:operation name="subtract">
+                <wsdl:input message="tns:SubtractRequest"/>
+                <wsdl:output message="tns:SubtractResponse"/>
+            </wsdl:operation>
+        </wsdl:portType>
+    
+        <wsdl:binding name="CalculatorBinding" type="tns:CalculatorPortType">
+            <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+            <wsdl:operation name="add">
+                <soap:operation soapAction="urn:add"/>
+                <wsdl:input>
+                    <soap:body use="literal"/>
+                </wsdl:input>
+                <wsdl:output>
+                    <soap:body use="literal"/>
+                </wsdl:output>
+            </wsdl:operation>
+            <wsdl:operation name="subtract">
+                <soap:operation soapAction="urn:subtract"/>
+                <wsdl:input>
+                    <soap:body use="literal"/>
+                </wsdl:input>
+                <wsdl:output>
+                    <soap:body use="literal"/>
+                </wsdl:output>
+            </wsdl:operation>
+        </wsdl:binding>
+    
+        <wsdl:service name="CalculatorService">
+            <wsdl:port name="CalculatorPort" binding="tns:CalculatorBinding">
+                <soap:address location="http://localhost/"/>
+            </wsdl:port>
+        </wsdl:service>
+    
+    </definitions>';
+    exit;
+}
+
+// SOAP Web Service Class
+class CalculatorService {
+    public function add($a, $b) {
+        return $a + $b;
+    }
+    public function subtract($a, $b) {
+        return $a - $b;
+    }
+}
+
+// SOAP Server
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $server = new SoapServer('http://' . $_SERVER['HTTP_HOST'] . '/calculator.wsdl');
+    $server->setClass('CalculatorService');
+    $server->handle();
+    exit;
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOAP Web Service Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            margin: 10px;
+            padding: 8px;
+            width: 80px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SOAP Calculator</h1>
+        <label for="a">Number A:</label>
+        <input type="number" id="a">
+        <label for="b">Number B:</label>
+        <input type="number" id="b">
+        <button onclick="callAdd()">Add</button>
+        <button onclick="callSubtract()">Subtract</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function callAdd() {
+            const a = document.getElementById('a').value;
+            const b = document.getElementById('b').value;
+
+            if (a === '' || b === '') {
+                alert('Please provide both numbers');
+                return;
+            }
+
+            const soapRequest = `
+                <?xml version="1.0" encoding="UTF-8"?>
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                                  xmlns:web="http://www.example.com/calculator">
+                    <soapenv:Header/>
+                    <soapenv:Body>
+                        <web:add>
+                            <a>${a}</a>
+                            <b>${b}</b>
+                        </web:add>
+                    </soapenv:Body>
+                </soapenv:Envelope>
+            `;
+
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/xml',
+                    'SOAPAction': 'urn:add'
+                },
+                body: soapRequest
+            })
+            .then(response => response.text())
+            .then(str => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(str, "text/xml");
+                const result = xmlDoc.getElementsByTagName('result')[0].childNodes[0].nodeValue;
+                document.getElementById('result').innerText = `Result: ${result}`;
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function callSubtract() {
+            const a = document.getElementById('a').value;
+            const b = document.getElementById('b').value;
+
+            if (a === '' || b === '') {
+                alert('Please provide both numbers');
+                return;
+            }
+
+            const soapRequest = `
+                <?xml version="1.0" encoding="UTF-8"?>
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                                  xmlns:web="http://www.example.com/calculator">
+                    <soapenv:Header/>
+                    <soapenv:Body>
+                        <web:subtract>
+                            <a>${a}</a>
+                            <b>${b}</b>
+                        </web:subtract>
+                    </soapenv:Body>
+                </soapenv:Envelope>
+            `;
+
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/xml',
+                    'SOAPAction': 'urn:subtract'
+                },
+                body: soapRequest
+            })
+            .then(response => response.text())
+            .then(str => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(str, "text/xml");
+                const result = xmlDoc.getElementsByTagName('result')[0].childNodes[0].nodeValue;
+                document.getElementById('result').innerText = `Result: ${result}`;
+            })
+            .catch(err => console.error('Error:', err));
+        }
+    </script>
+</body>
+</html>

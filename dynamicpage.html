@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Home Page</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and container */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .btn-light {
+            background-color: #f0f0f0;
+        }
+
+        .btn-dark {
+            background-color: #333;
+            color: white;
+        }
+
+        /* Theme (Light/Dark Mode) */
+        body.light-mode {
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f9;
+        }
+
+        .container.light-mode {
+            background-color: #fff;
+        }
+
+        .container.dark-mode {
+            background-color: #222;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container light-mode">
+        <h1>Welcome to the Dynamic Home Page</h1>
+        <p id="text-content">This is a dynamic home page with interactive buttons. Use the buttons below to change various elements.</p>
+
+        <!-- Buttons -->
+        <div>
+            <button class="btn btn-light" onclick="toggleTheme()">Toggle Theme (Light/Dark)</button>
+            <button class="btn btn-light" onclick="changeBackgroundColor()">Change Background Color</button>
+            <button class="btn btn-light" onclick="changeTextContent()">Change Text</button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between light and dark mode
+        function toggleTheme() {
+            const body = document.body;
+            const container = document.querySelector('.container');
+            const isDarkMode = body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                body.classList.remove('dark-mode');
+                container.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                container.classList.add('light-mode');
+            } else {
+                body.classList.remove('light-mode');
+                container.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                container.classList.add('dark-mode');
+            }
+        }
+
+        // Change the background color randomly
+        function changeBackgroundColor() {
+            const colors = ['#f4f4f9', '#ffdfdf', '#d1f1d1', '#ffeb3b', '#e1e1e1', '#f0f0f0'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.style.backgroundColor = randomColor;
+        }
+
+        // Change the text content of the page
+        function changeTextContent() {
+            const textElement = document.getElementById('text-content');
+            const newTexts = [
+                'This is your dynamic homepage. Click the buttons to interact.',
+                'You can change the background color and theme as you wish!',
+                'Enjoy exploring this dynamic page with JavaScript interactions.',
+                'Click the buttons below to make the page more interactive!'
+            ];
+            const randomText = newTexts[Math.floor(Math.random() * newTexts.length)];
+            textElement.textContent = randomText;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

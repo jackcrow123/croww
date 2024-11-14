@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 60%;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Contact List</h2>
+        
+        <!-- Contact Form -->
+        <form id="contactForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <button type="submit">Add Contact</button>
+            <p id="errorMessage" class="error"></p>
+        </form>
+
+        <!-- Contact Table -->
+        <table id="contactTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to handle form submission
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get the input values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Simple validation to ensure inputs are not empty
+            if (!name || !email || !phone) {
+                errorMessage.textContent = 'All fields are required!';
+                return;
+            } else {
+                errorMessage.textContent = ''; // Clear any previous error message
+            }
+
+            // Create a new row in the table
+            const tableBody = document.getElementById('contactTable').getElementsByTagName('tbody')[0];
+            const newRow = tableBody.insertRow();
+
+            // Insert new cells for each piece of data
+            const nameCell = newRow.insertCell(0);
+            const emailCell = newRow.insertCell(1);
+            const phoneCell = newRow.insertCell(2);
+
+            // Add the data to the cells
+            nameCell.textContent = name;
+            emailCell.textContent = email;
+            phoneCell.textContent = phone;
+
+            // Clear the form inputs
+            document.getElementById('contactForm').reset();
+        });
+    </script>
+</body>
+</html>

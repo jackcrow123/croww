@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shapes in HTML, CSS, and JavaScript</title>
+  <style>
+    /* Basic container styling */
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .shape-container {
+      text-align: center;
+      margin: 20px;
+    }
+
+    /* Square */
+    .square {
+      width: 100px;
+      height: 100px;
+      background-color: #3498db;
+    }
+
+    /* Rectangle */
+    .rectangle {
+      width: 150px;
+      height: 80px;
+      background-color: #e74c3c;
+    }
+
+    /* Circle */
+    .circle {
+      width: 100px;
+      height: 100px;
+      background-color: #2ecc71;
+      border-radius: 50%;
+    }
+
+    /* Triangle */
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 100px solid #f39c12;
+    }
+
+    /* Oval */
+    .oval {
+      width: 150px;
+      height: 100px;
+      background-color: #9b59b6;
+      border-radius: 50%;
+    }
+
+    /* Diamond */
+    .diamond {
+      width: 100px;
+      height: 100px;
+      background-color: #1abc9c;
+      transform: rotate(45deg);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shape Containers with Labels -->
+  <div class="shape-container">
+    <div class="square"></div>
+    <p>Square</p>
+  </div>
+
+  <div class="shape-container">
+    <div class="rectangle"></div>
+    <p>Rectangle</p>
+  </div>
+
+  <div class="shape-container">
+    <div class="circle"></div>
+    <p>Circle</p>
+  </div>
+
+  <div class="shape-container">
+    <div class="triangle"></div>
+    <p>Triangle</p>
+  </div>
+
+  <div class="shape-container">
+    <div class="oval"></div>
+    <p>Oval</p>
+  </div>
+
+  <div class="shape-container">
+    <div class="diamond"></div>
+    <p>Diamond</p>
+  </div>
+
+  <script>
+    // JavaScript can be used to add animation or interaction
+    document.querySelector('.circle').onclick = function() {
+      this.style.backgroundColor = this.style.backgroundColor === 'orange' ? '#2ecc71' : 'orange';
+    };
+  </script>
+
+</body>
+</html>
+

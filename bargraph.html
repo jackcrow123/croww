@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Bar Graph</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        .controls input, .controls button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="barChart" width="600" height="400"></canvas>
+    <div class="controls">
+        <input type="text" id="newData" placeholder="Enter values (comma-separated)" />
+        <button onclick="updateData()">Update Graph</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('barChart');
+        const ctx = canvas.getContext('2d');
+
+        // Initial bar chart data
+        let data = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            values: [12, 19, 3, 5, 2, 3]
+        };
+
+        const barWidth = 50;
+        const gap = 20;
+        const chartHeight = canvas.height - 50;
+        const animationSpeed = 0.05;
+
+        // Function to animate and draw the bar graph
+        function animateBarGraph() {
+            let currentValues = data.values.map(() => 0); // Start all bars at 0 height
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+                // Find max value to scale bar heights
+                const maxBarHeight = Math.max(...data.values);
+                
+                data.values.forEach((targetValue, index) => {
+                    // Smoothly increase current values to target values
+                    if (currentValues[index] < targetValue) {
+                        currentValues[index] += animationSpeed * targetValue;
+                    } else {
+                        currentValues[index] = targetValue;
+                    }
+
+                    // Calculate bar height relative to max value
+                    const barHeight = (currentValues[index] / maxBarHeight) * chartHeight;
+                    const x = (barWidth + gap) * index + gap;
+                    const y = canvas.height - barHeight;
+
+                    // Draw bar
+                    ctx.fillStyle = '#3498db';
+                    ctx.fillRect(x, y, barWidth, barHeight);
+
+                    // Add value label above each bar
+                    ctx.fillStyle = '#333';
+                    ctx.font = '14px Arial';
+                    ctx.fillText(Math.round(currentValues[index]), x + barWidth / 4, y - 5);
+
+                    // Add label below each bar
+                    ctx.fillText(data.labels[index], x + barWidth / 4, canvas.height - 10);
+                });
+
+                // Draw y-axis line
+                ctx.beginPath();
+                ctx.moveTo(gap, 0);
+                ctx.lineTo(gap, canvas.height - 30);
+                ctx.stroke();
+
+                // Continue drawing until all values reach target
+                if (currentValues.some((value, index) => value < data.values[index])) {
+                    requestAnimationFrame(draw);
+                }
+            }
+
+            draw(); // Start the animation
+        }
+
+        // Function to update data dynamically based on user input
+        function updateData() {
+            const newData = document.getElementById('newData').value;
+            if (newData) {
+                // Parse input values and set them to the data array
+                data.values = newData.split(',').map(Number);
+                // Start animation with new data
+                animateBarGraph();
+            }
+        }
+
+        // Initial animation on page load
+        animateBarGraph();
+    </script>
+</body>
+</html>
